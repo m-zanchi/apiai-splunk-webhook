@@ -62,7 +62,7 @@ def makeYqlQuery(req):
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
 
-def makeWebhookResult(data):
+def makeWebhookResult(req):
     # query = data.get('query')
     #if query is None:
     #    return {}
@@ -87,7 +87,7 @@ def makeWebhookResult(data):
 
     # print(json.dumps(item, indent=4))
 	
-	result = data.get("result")
+	result = req.get("result")
     parameters = result.get("parameters")
     region = parameters.get("region")
 	gu = parameters.get("gu")
