@@ -87,7 +87,7 @@ def makeWebhookResult(data):
 
     # print(json.dumps(item, indent=4))
 	
-	result = req.get("result")
+	result = data.get("result")
     parameters = result.get("parameters")
     region = parameters.get("region")
 	gu = parameters.get("gu")
