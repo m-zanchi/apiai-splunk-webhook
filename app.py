@@ -94,9 +94,9 @@ def makeWebhookResult(req):
 	og = parameters.get("og")
 	period = parameters.get("period")
 
-	if region == "EALA":
-     	savings = str(100)
-	else: savings = str(50)
+	#if region == "EALA":
+    # 	savings = str(100)
+	#else: savings = str(50)
 	
     #speech = "Your savings are " + savings + "$ for "+ region
 	speech = "Your savings are..."
@@ -108,7 +108,7 @@ def makeWebhookResult(req):
         "displayText": speech,
         # "data": data,
         # "contextOut": [],
-        "source": "apiai-weather-webhook-sample"
+        "source": "apiai-splunk"
     }
 
 
