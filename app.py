@@ -36,70 +36,58 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "RDP_commitedsavings":
+    if req.get("result").get("action") != "RDP_committedsavings":
         return {}
-    #baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    #yql_query = makeYqlQuery(req)
-    #if yql_query is None:
-    #    return {}
-    #yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-    #result = urlopen(yql_url).read()
-    #data = json.loads(result)
-	
-    res = makeWebhookResult(req)
+    baseurl = "https://query.yahooapis.com/v1/public/yql?"
+    yql_query = makeYqlQuery(req)
+    if yql_query is None:
+        return {}
+    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
+    result = urlopen(yql_url).read()
+    data = json.loads(result)
+    res = makeWebhookResult(data)
     return res
 
 
 def makeYqlQuery(req):
     result = req.get("result")
     parameters = result.get("parameters")
-    region = parameters.get("region")
-	gu = parameters.get("gu")
-	og = parameters.get("og")
-	period = parameters.get("period")
-    
+    #city = parameters.get("geo-city")
+	city = "Milan"
+    if city is None:
+        return None
 
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
 
-def makeWebhookResult(req):
-    # query = data.get('query')
-    #if query is None:
-    #    return {}
+def makeWebhookResult(data):
+    query = data.get('query')
+    if query is None:
+        return {}
 
-    #result = query.get('results')
-    #if result is None:
-    #    return {}
+    result = query.get('results')
+    if result is None:
+        return {}
 
-    #channel = result.get('channel')
-    #if channel is None:
-    #    return {}
+    channel = result.get('channel')
+    if channel is None:
+        return {}
 
-    #item = channel.get('item')
-    #location = channel.get('location')
-    #units = channel.get('units')
-    #if (location is None) or (item is None) or (units is None):
-    #    return {}
+    item = channel.get('item')
+    location = channel.get('location')
+    units = channel.get('units')
+    if (location is None) or (item is None) or (units is None):
+        return {}
 
-    #condition = item.get('condition')
-    #if condition is None:
-    #    return {}
+    condition = item.get('condition')
+    if condition is None:
+        return {}
 
     # print(json.dumps(item, indent=4))
-	
-	result = req.get("result")
-    parameters = result.get("parameters")
-    region = parameters.get("region")
-	gu = parameters.get("gu")
-	og = parameters.get("og")
-	period = parameters.get("period")
 
-	#if region == "EALA":
-    # 	savings = str(100)
-	#else: savings = str(50)
-	
-    #speech = "Your savings are " + savings + "$ for "+ region
-	speech = "Your savings are..."
+    speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
+             ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
+
     print("Response:")
     print(speech)
 
@@ -108,7 +96,7 @@ def makeWebhookResult(req):
         "displayText": speech,
         # "data": data,
         # "contextOut": [],
-        "source": "apiai-splunk"
+        "source": "apiai-weather-webhook-sample"
     }
 
 
