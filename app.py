@@ -98,8 +98,8 @@ def makeWebhookResult(data):
      	savings=str(100)
 	else: savings = str(50)
 	
-    speech = "Your savings are " + savings + "$ for "+ region
-
+    #speech = "Your savings are " + savings + "$ for "+ region
+	speech = "Your savings are..."
     print("Response:")
     print(speech)
 
