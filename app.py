@@ -38,14 +38,15 @@ def webhook():
 def processRequest(req):
     if req.get("result").get("action") != "RDP_commitedsavings":
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    yql_query = makeYqlQuery(req)
-    if yql_query is None:
-        return {}
-    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-    result = urlopen(yql_url).read()
-    data = json.loads(result)
-    res = makeWebhookResult(data)
+    #baseurl = "https://query.yahooapis.com/v1/public/yql?"
+    #yql_query = makeYqlQuery(req)
+    #if yql_query is None:
+    #    return {}
+    #yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
+    #result = urlopen(yql_url).read()
+    #data = json.loads(result)
+	
+    res = makeWebhookResult(req)
     return res
 
 
@@ -62,31 +63,36 @@ def makeYqlQuery(req):
 
 
 def makeWebhookResult(data):
-    query = data.get('query')
-    if query is None:
-        return {}
+    # query = data.get('query')
+    #if query is None:
+    #    return {}
 
-    result = query.get('results')
-    if result is None:
-        return {}
+    #result = query.get('results')
+    #if result is None:
+    #    return {}
 
-    channel = result.get('channel')
-    if channel is None:
-        return {}
+    #channel = result.get('channel')
+    #if channel is None:
+    #    return {}
 
-    item = channel.get('item')
-    location = channel.get('location')
-    units = channel.get('units')
-    if (location is None) or (item is None) or (units is None):
-        return {}
+    #item = channel.get('item')
+    #location = channel.get('location')
+    #units = channel.get('units')
+    #if (location is None) or (item is None) or (units is None):
+    #    return {}
 
-    condition = item.get('condition')
-    if condition is None:
-        return {}
+    #condition = item.get('condition')
+    #if condition is None:
+    #    return {}
 
     # print(json.dumps(item, indent=4))
 	
-	region = query.get('region')
+	result = req.get("result")
+    parameters = result.get("parameters")
+    region = parameters.get("region")
+	gu = parameters.get("gu")
+	og = parameters.get("og")
+	period = parameters.get("period")
 
 	if region = "EALA":
      	savings=100
