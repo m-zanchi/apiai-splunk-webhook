@@ -36,7 +36,7 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "yahooWeatherForecast":
+    if req.get("result").get("action") != "RDP_commitedsavings":
         return {}
     baseurl = "https://query.yahooapis.com/v1/public/yql?"
     yql_query = makeYqlQuery(req)
@@ -52,9 +52,11 @@ def processRequest(req):
 def makeYqlQuery(req):
     result = req.get("result")
     parameters = result.get("parameters")
-    city = parameters.get("geo-city")
-    if city is None:
-        return None
+    region = parameters.get("region")
+	gu = parameters.get("gu")
+	og = parameters.get("og")
+	period = parameters.get("period")
+    
 
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
@@ -83,8 +85,14 @@ def makeWebhookResult(data):
         return {}
 
     # print(json.dumps(item, indent=4))
+	
+	region = query.get('region')
 
-    speech = "Your savings are XXX for region YYYY "
+	if region = "EALA":
+     	savings=100
+	else: savings = 50
+	
+    speech = "Your savings are " + savings + "$ for "+ region
 
     print("Response:")
     print(speech)
