@@ -95,8 +95,8 @@ def makeWebhookResult(data):
 	period = parameters.get("period")
 
 	if region = "EALA":
-     	savings=100
-	else: savings = 50
+     	savings=str(100)
+	else: savings = str(50)
 	
     speech = "Your savings are " + savings + "$ for "+ region
 
