@@ -10,6 +10,9 @@ from urllib.error import HTTPError
 
 import json
 import os
+import time
+import http.client
+from xml.dom import minidom
 
 from flask import Flask
 from flask import request
@@ -36,59 +39,64 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "RDP_committedsavings":
+    if req.get("result").get("action") != "SLA_Performance":
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    yql_query = makeYqlQuery(req)
-    if yql_query is None:
+    conn = http.client.HTTPSConnection("dh2.aiam.accenture.com")
+	yql_query = makeYqlQuery(req)
+	if yql_query is None:
         return {}
-    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-    result = urlopen(yql_url).read()
-    data = json.loads(result)
-    res = makeWebhookResult(data)
+	payload = urlencode({'q': yql_query})
+	# userAndPass = b64encode(b"username:password").decode("ascii")
+	headers = {
+    'content-type': "application/x-www-form-urlencoded",
+    'authorization': "Basic bWF0dGVvX3Jlc3Q6cmVzdGFjY2Vzcw=="
+    }
+
+	conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
+	res = conn.getresponse()
+	data = res.read()
+	sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
+		
+    t_end = time.time() + 60  
+	while time.time() < t_end:
+		time.sleep(5)
+		searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)[1]
+		res = conn.getresponse()
+		data2 = res.read()
+		props = minidom.parseString(data2).getElementsByTagName('s:key')
+		for element in props:
+			if element.getAttribute('name') == "isDone":
+				isdonestatus = element.childNodes[0].nodeValue
+				break
+		isdonestatus = isdonestatus.search(searchstatus).groups()[0]
+		if (isdonestatus == '1'):
+			break
+	if (isdonestatus == '0'):
+		return {}
+	conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
+	res = conn.getresponse()
+	data3 = res.read()
+    
+	res = makeWebhookResult(data3)	
     return res
 
 
 def makeYqlQuery(req):
     result = req.get("result")
     parameters = result.get("parameters")
-    city = parameters.get("geo-city")
-    if city is None:
+    priority = parameters.get("priority")
+    if priority is None:
         return None
 
-    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+    return 'search * index="mz_sla" | where Priority="' + priority +'" | table Priority, SLA_Performance'
 
 
-def makeWebhookResult(data):
-    query = data.get('query')
-    if query is None:
-        return {}
+def makeWebhookResult(data3):
 
-    result = query.get('results')
-    if result is None:
-        return {}
+	Priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
+	SLA_Performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
 
-    channel = result.get('channel')
-    if channel is None:
-        return {}
-
-    item = channel.get('item')
-    location = channel.get('location')
-    units = channel.get('units')
-    if (location is None) or (item is None) or (units is None):
-        return {}
-
-    condition = item.get('condition')
-    if condition is None:
-        return {}
-
-    # print(json.dumps(item, indent=4))
-
-    speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
-             ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
-
-    print("Response:")
-    print(speech)
+    speech = "Latest SLA Performance for " + Priority + " is " + SLA_Performance 
 
     return {
         "speech": speech,
