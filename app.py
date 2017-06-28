@@ -46,7 +46,7 @@ def processRequest(req):
     yql_query = makeYqlQuery(req)
     print("Query:")
     print(yql_query)
-	if yql_query is None:
+    if yql_query is None:
         return {}
 	payload = urlencode({'q': yql_query})
 	# userAndPass = b64encode(b"username:password").decode("ascii")
@@ -59,9 +59,9 @@ def processRequest(req):
 	res = conn.getresponse()
 	data = res.read()
 	sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
-	
+    
     print("Splunk Job Created SID:" + sid)
-	
+    
 	t_end = time.time() + 60
     while time.time() < t_end:
         time.sleep(5)
@@ -79,7 +79,7 @@ def processRequest(req):
     if (isdonestatus == '0'):
 	    return {}
     print("Splunk Job Finished")
-	conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
+    conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
     res = conn.getresponse()
     data3 = res.read()
     print("Splunk Search Results")
@@ -118,5 +118,4 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
 
     print("Starting app on port %d" % port)
-
     app.run(debug=False, port=port, host='0.0.0.0')
