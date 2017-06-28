@@ -48,7 +48,7 @@ def processRequest(req):
     print(yql_query)
     #if yql_query is None:
     #    return {}
-    payload = urlencode({'q': yql_query})
+    payload = urlencode({'q': "search=" + yql_query})
 	# userAndPass = b64encode(b"username:password").decode("ascii")
     headers = {
     'content-type': "application/x-www-form-urlencoded",
@@ -57,8 +57,6 @@ def processRequest(req):
 
     conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
     res = conn.getresponse()
-    print("Splunk Job Response:")
-    print(res)
     data = res.read()
     print("Splunk Job Data:")
     print(data)
