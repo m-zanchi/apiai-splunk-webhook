@@ -94,7 +94,7 @@ def makeYqlQuery(req):
     priority = parameters.get("priority")
     if priority is None:
         return None
-
+    print("Priority:" + priority)
     return 'search * index="mz_sla" | where Priority="' + priority +'" | table Priority, SLA_Performance'
 
 
