@@ -62,7 +62,7 @@ def processRequest(req):
     
     print("Splunk Job Created SID:" + sid)
     
-	t_end = time.time() + 60
+    t_end = time.time() + 60
     while time.time() < t_end:
         time.sleep(5)
         searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)[1]
