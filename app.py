@@ -55,8 +55,8 @@ def processRequest(req):
     'authorization': "Basic bWF0dGVvX3Jlc3Q6cmVzdGFjY2Vzcw=="
     }
 
-	conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
-	res = conn.getresponse()
+    conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
+    res = conn.getresponse()
     print("Splunk Job Response:")
     print(res)
     data = res.read()
