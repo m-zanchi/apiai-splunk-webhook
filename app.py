@@ -33,7 +33,7 @@ def webhook():
 
     res = json.dumps(res, indent=4)
     print("Processed Response:")
-	print(res)
+    print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
@@ -45,7 +45,7 @@ def processRequest(req):
     conn = http.client.HTTPSConnection("dh2.aiam.accenture.com")
     yql_query = makeYqlQuery(req)
     print("Query:")
-	print(yql_query)
+    print(yql_query)
 	if yql_query is None:
         return {}
 	payload = urlencode({'q': yql_query})
@@ -60,7 +60,7 @@ def processRequest(req):
 	data = res.read()
 	sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
 	
-	print("Splunk Job Created SID:" + sid)
+    print("Splunk Job Created SID:" + sid)
 	
 	t_end = time.time() + 60
     while time.time() < t_end:
@@ -83,7 +83,7 @@ def processRequest(req):
     res = conn.getresponse()
     data3 = res.read()
     print("Splunk Search Results")
-	print(data3)
+    print(data3)
     res = makeWebhookResult(data3)	
     return res
 
