@@ -42,8 +42,8 @@ def processRequest(req):
     if req.get("result").get("action") != "SLA_Performance":
         return {}
     conn = http.client.HTTPSConnection("dh2.aiam.accenture.com")
-	yql_query = makeYqlQuery(req)
-	if yql_query is None:
+    yql_query = makeYqlQuery(req)
+    if yql_query is None:
         return {}
 	payload = urlencode({'q': yql_query})
 	# userAndPass = b64encode(b"username:password").decode("ascii")
@@ -57,27 +57,27 @@ def processRequest(req):
 	data = res.read()
 	sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
 		
-    t_end = time.time() + 60  
-	while time.time() < t_end:
-		time.sleep(5)
-		searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)[1]
-		res = conn.getresponse()
-		data2 = res.read()
-		props = minidom.parseString(data2).getElementsByTagName('s:key')
-		for element in props:
-			if element.getAttribute('name') == "isDone":
-				isdonestatus = element.childNodes[0].nodeValue
-				break
-		isdonestatus = isdonestatus.search(searchstatus).groups()[0]
-		if (isdonestatus == '1'):
-			break
-	if (isdonestatus == '0'):
-		return {}
-	conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
-	res = conn.getresponse()
-	data3 = res.read()
-    
-	res = makeWebhookResult(data3)	
+    t_end = time.time() + 60
+    while time.time() < t_end:
+        time.sleep(5)
+        searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)[1]
+        res = conn.getresponse()
+        data2 = res.read()
+        props = minidom.parseString(data2).getElementsByTagName('s:key')
+        for element in props:
+            if element.getAttribute('name') == "isDone":
+                isdonestatus = element.childNodes[0].nodeValue
+                break
+        isdonestatus = isdonestatus.search(searchstatus).groups()[0]
+        if (isdonestatus == '1'):
+            break
+    if (isdonestatus == '0'):
+	    return {}
+    conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
+    res = conn.getresponse()
+    data3 = res.read()
+   
+    res = makeWebhookResult(data3)	
     return res
 
 
@@ -92,12 +92,12 @@ def makeYqlQuery(req):
 
 
 def makeWebhookResult(data3):
-
-	Priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
-	SLA_Performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
-
-    speech = "Latest SLA Performance for " + Priority + " is " + SLA_Performance 
-
+    Priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
+    SLA_Performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
+    speech = "Latest SLA Performance for " + Priority + " is " + SLA_Performance
+    
+    print("Response:")
+    print(speech)
     return {
         "speech": speech,
         "displayText": speech,
