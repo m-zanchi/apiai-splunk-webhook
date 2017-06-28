@@ -32,7 +32,8 @@ def webhook():
     res = processRequest(req)
 
     res = json.dumps(res, indent=4)
-    # print(res)
+    print("Processed Response:")
+	print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
@@ -43,7 +44,9 @@ def processRequest(req):
         return {}
     conn = http.client.HTTPSConnection("dh2.aiam.accenture.com")
     yql_query = makeYqlQuery(req)
-    if yql_query is None:
+    print("Query:")
+	print(yql_query)
+	if yql_query is None:
         return {}
 	payload = urlencode({'q': yql_query})
 	# userAndPass = b64encode(b"username:password").decode("ascii")
@@ -56,8 +59,10 @@ def processRequest(req):
 	res = conn.getresponse()
 	data = res.read()
 	sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
-		
-    t_end = time.time() + 60
+	
+	print("Splunk Job Created SID:" + sid)
+	
+	t_end = time.time() + 60
     while time.time() < t_end:
         time.sleep(5)
         searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)[1]
@@ -73,10 +78,12 @@ def processRequest(req):
             break
     if (isdonestatus == '0'):
 	    return {}
-    conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
+    print("Splunk Job Finished")
+	conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
     res = conn.getresponse()
     data3 = res.read()
-   
+    print("Splunk Search Results")
+	print(data3)
     res = makeWebhookResult(data3)	
     return res
 
@@ -96,7 +103,7 @@ def makeWebhookResult(data3):
     SLA_Performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
     speech = "Latest SLA Performance for " + Priority + " is " + SLA_Performance
     
-    print("Response:")
+    print("Speech:")
     print(speech)
     return {
         "speech": speech,
