@@ -59,8 +59,8 @@ def processRequest(req):
     conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
     res = conn.getresponse()
     data = res.read()
-    print("Splunk Job Data:")
-    print(data)
+    #print("Splunk Job Data:")
+    #print(data)
     sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
     
     print("Splunk Job Created SID:" + sid)
