@@ -48,7 +48,7 @@ def processRequest(req):
     print(yql_query)
     #if yql_query is None:
     #    return {}
-    payload = urlencode({'q': "search=" + yql_query})
+    payload = urlencode({'q': ("search=" + yql_query)})
 	# userAndPass = b64encode(b"username:password").decode("ascii")
     headers = {
     'content-type': "application/x-www-form-urlencoded",
