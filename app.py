@@ -66,9 +66,10 @@ def processRequest(req):
     print("Splunk Job Created SID:" + sid)
     
     t_end = time.time() + 60
+    isdonestatus == '0'
     while time.time() < t_end:
         time.sleep(5)
-        searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)[1]
+        searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)
         res = conn.getresponse()
         data2 = res.read()
         props = minidom.parseString(data2).getElementsByTagName('s:key')
@@ -76,11 +77,10 @@ def processRequest(req):
             if element.getAttribute('name') == "isDone":
                 isdonestatus = element.childNodes[0].nodeValue
                 break
-        isdonestatus = isdonestatus.search(searchstatus).groups()[0]
         if (isdonestatus == '1'):
             break
     if (isdonestatus == '0'):
-	    return {}
+        return {}
     print("Splunk Job Finished")
     conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
     res = conn.getresponse()
