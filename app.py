@@ -105,6 +105,7 @@ def makeYqlQuery(req):
 
 def makeWebhookResult(data3):
     Priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
+    print("Priority: " + Priority)
     SLA_Performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
     speech = "Latest SLA Performance for " + Priority + " is " + SLA_Performance
     
@@ -113,8 +114,6 @@ def makeWebhookResult(data3):
     return {
         "speech": speech,
         "displayText": speech,
-        # "data": data,
-        # "contextOut": [],
         "source": "apiai-weather-webhook-sample"
     }
 
