@@ -64,9 +64,8 @@ def processRequest(req):
     sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
     
     print("Splunk Job Created SID:" + sid)
-    
     t_end = time.time() + 60
-    isdonestatus == '0'
+    isdonestatus = '0'
     while (time.time() < t_end):
         time.sleep(5)
         print("Querying job status...")
