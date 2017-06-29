@@ -86,7 +86,7 @@ def processRequest(req):
     res = conn.getresponse()
     data3 = res.read()
 
-    webhookres = makeWebhookResult(data3)	
+    webhookres = makeWebhookResult(data3.decode("utf-8"))	
     return webhookres
 
 
@@ -103,9 +103,9 @@ def makeYqlQuery(req):
 def makeWebhookResult(data3):
     print("makeWebhookResult from data:")
     print(data3)
-    Priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
-    SLA_Performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
-    speech = "Latest SLA Performance for " + Priority + " is " + SLA_Performance
+    priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
+    sla_performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
+    speech = "Latest SLA Performance for " + priority + " is " + sla_performance
     
     print("Speech:")
     print(speech)
