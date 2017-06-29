@@ -67,7 +67,7 @@ def processRequest(req):
     
     t_end = time.time() + 60
     isdonestatus == '0'
-    while time.time() < t_end:
+    while (time.time() < t_end):
         time.sleep(5)
         print("Querying job status...")
         searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)
