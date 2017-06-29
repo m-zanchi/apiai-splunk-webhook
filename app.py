@@ -55,7 +55,7 @@ def processRequest(req):
     'content-type': "application/x-www-form-urlencoded",
     'authorization': "Basic bWF0dGVvX3Jlc3Q6cmVzdGFjY2Vzcw=="
     }
-
+    return {}
     conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
     res = conn.getresponse()
     data = res.read()
