@@ -48,19 +48,18 @@ def processRequest(req):
     print(yql_query)
     #if yql_query is None:
     #    return {}
-    payload = urlencode({'q': ("search=" + yql_query)})
+    payload = urlencode("search=" + yql_query)
     print(payload)
     # userAndPass = b64encode(b"username:password").decode("ascii")
     headers = {
     'content-type': "application/x-www-form-urlencoded",
     'authorization': "Basic bWF0dGVvX3Jlc3Q6cmVzdGFjY2Vzcw=="
     }
-    return {}
     conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
     res = conn.getresponse()
     data = res.read()
-    #print("Splunk Job Data:")
-    #print(data)
+    print("Splunk Job Data:")
+    print(data)
     sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
     
     print("Splunk Job Created SID:" + sid)
