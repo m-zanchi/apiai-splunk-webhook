@@ -103,8 +103,8 @@ def makeYqlQuery(req):
 def makeWebhookResult(data3):
     print("makeWebhookResult from data:")
     print(data3)
-    priority = minidom.parseString(data3).getElementsByTagName('text')[0].nodeValue
-    sla_performance = minidom.parseString(data3).getElementsByTagName('text')[1].nodeValue
+    priority = minidom.parseString(data3).getElementsByTagName('text')[0].firstChild.nodeValue
+    sla_performance = minidom.parseString(data3).getElementsByTagName('text')[1].firstChild.nodeValue
     speech = "Latest SLA Performance for " + priority + " is " + sla_performance
     
     print("Speech:")
