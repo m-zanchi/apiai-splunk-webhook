@@ -59,20 +59,17 @@ def processRequest(req):
     conn.request("POST", "/rest-ealadev/services/search/jobs", payload, headers)
     res = conn.getresponse()
     data = res.read()
-    print("Splunk Job Data:")
-    print(data)
+
     sid = minidom.parseString(data).getElementsByTagName('sid')[0].childNodes[0].nodeValue
     
     print("Splunk Job Created SID:" + sid)
     t_end = time.time() + 60
     isdonestatus = '0'
     while (time.time() < t_end):
-        time.sleep(5)
         print("Querying job status...")
         searchstatus = conn.request('GET',"/rest-ealadev/services/search/jobs/" + sid, headers=headers)
         res = conn.getresponse()
         data2 = res.read()
-        print(data2)
         props = minidom.parseString(data2).getElementsByTagName('s:key')
         for element in props:
             if element.getAttribute('name') == "isDone":
@@ -80,6 +77,7 @@ def processRequest(req):
                 break
         if (isdonestatus == '1'):
             break
+        time.sleep(2)
     if (isdonestatus == '0'):
         print ("Timeout")
         return {}
@@ -87,10 +85,9 @@ def processRequest(req):
     conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
     res = conn.getresponse()
     data3 = res.read()
-    print("Splunk Search Results")
-    print(data3)
-    WebhookRes = makeWebhookResult(data3)	
-    return WebhookRes
+
+    webhookres = makeWebhookResult(data3)	
+    return webhookres
 
 
 def makeYqlQuery(req):
