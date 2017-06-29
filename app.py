@@ -89,8 +89,8 @@ def processRequest(req):
     data3 = res.read()
     print("Splunk Search Results")
     print(data3)
-    res = makeWebhookResult(data3)	
-    return res
+    WebhookRes = makeWebhookResult(data3)	
+    return WebhookRes
 
 
 def makeYqlQuery(req):
