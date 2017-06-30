@@ -97,7 +97,10 @@ def makeYqlQuery(req):
     if priority is None:
         return None
     print("Priority:" + priority)
-    return 'search * index="mz_sla" | where Priority="' + priority +'" | table Priority, SLA_Performance'
+    filter = 'where Priority="' + priority +' |'
+    if priority == "ALL":
+        filter = ""
+    return 'search * index="mz_sla" | ' + filter + ' table Priority, SLA_Performance'
 
 
 def makeWebhookResult(data3):
