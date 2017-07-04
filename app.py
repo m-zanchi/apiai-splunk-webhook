@@ -97,7 +97,7 @@ def makeYqlQuery(req):
     if priority is None:
         return None
     print("Priority:" + priority)
-    filter = 'where Priority="' + priority +' |'
+    filter = 'where Priority="' + priority +'" |'
     if priority == "ALL":
         filter = ""
     return 'search * index="mz_sla" | ' + filter + ' table Priority, SLA_Performance'
