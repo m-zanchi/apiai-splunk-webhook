@@ -82,7 +82,7 @@ def processRequest(req):
         print ("Timeout")
         return {}
     print("Splunk Job Finished")
-    conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=xml", headers=headers)
+    conn.request("GET", "/rest-ealadev/services/search/jobs/"+sid+"/results?count=0&output_mode=json", headers=headers)
     res = conn.getresponse()
     data3 = res.read()
 
@@ -104,13 +104,19 @@ def makeYqlQuery(req):
 
 
 def makeWebhookResult(data3):
+    # NON VA... ERRORE props.length
+    #props = minidom.parseString(data3).getElementsByTagName('text')
+    #print("props:" + props.length)
+    #for x in xrange(0,props.length,2):
+    #    priority = props[x].firstChild.nodeValue
+    #   sla_performance = props[x+1].firstChild.nodeValue
+    #  speech = speech + "Latest SLA Performance for " + priority + " is " + sla_performance + ". "
 
-    props = minidom.parseString(data3).getElementsByTagName('text')
-    print("props:" + props.length)
-    for x in xrange(0,props.length,2):
-        priority = props[x].firstChild.nodeValue
-        sla_performance = props[x+1].firstChild.nodeValue
-        speech = speech + "Latest SLA Performance for " + priority + " is " + sla_performance + ". "
+    
+    data = json.loads(data3)
+
+    for i in data['results']:
+         speech = speech + "Latest SLA Performance for " + i["Priority"] + " is " + i["SLA_Performance"] + ". "
     
     print("Speech:")
     print(speech)
