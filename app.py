@@ -105,16 +105,15 @@ def makeYqlQuery(req):
 
 def makeWebhookResult(data3):
     # NON VA... ERRORE props.length
-    #props = minidom.parseString(data3).getElementsByTagName('text')
-    #print("props:" + props.length)
-    #for x in xrange(0,props.length,2):
+    # props = minidom.parseString(data3).getElementsByTagName('text')
+    # print("props:" + props.length)
+    # for x in xrange(0,props.length,2):
     #    priority = props[x].firstChild.nodeValue
     #   sla_performance = props[x+1].firstChild.nodeValue
     #  speech = speech + "Latest SLA Performance for " + priority + " is " + sla_performance + ". "
-
-    
+    print ("data3:" +  data3)
     data = json.loads(data3)
-
+    speech = ""
     for i in data['results']:
          speech = speech + "Latest SLA Performance for " + i["Priority"] + " is " + i["SLA_Performance"] + ". "
     
